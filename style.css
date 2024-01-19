@@ -1,0 +1,89 @@
+/* Căn giữa màn hình */
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+/* Tạo khoảng trắng viền đen */
+.black-border {
+  border: 1px solid #000;
+  padding: 20px;
+  background-color: #f8f9fa;
+}
+
+/* Căn giữa nội dung */
+.center-content {
+  text-align: center;
+}
+
+/* Căn giữa trên màn hình */
+.center-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Độ rộng ngang bằng với khoảng trắng */
+.full-width {
+  width: 100%;
+}
+
+/* Hiệu ứng animation cho thông báo */
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Style cho thông báo */
+.popup-alert {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  text-align: center;
+  animation: slideInDown 0.5s ease;
+  display: none;
+}
+
+/* Màu nền của thông báo khi nhập sai */
+.popup-alert.error {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+/* Màu nền của thông báo khi nhập đúng */
+.popup-alert.success {
+  background-color: #28a745;
+  color: #fff;
+}
+
+#randomWord2,
+#ex {
+  display: none;
+}
+
+/* Khoảng trắng giữa các form */
+.form-container {
+  margin: 20px;
+}
+
+/* Căn giữa form mới */
+#countdownForm,
+#girlForm {
+  display: none;
+  text-align: center;
+}
+
+#countdown {
+  font-size: 36px;
+  font-weight: bold;
+  margin-top: 20px;
+}

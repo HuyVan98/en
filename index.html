@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Random Word Game</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="form-container" id="originalForm">
+        <form id="dynamicForm">
+            <div class="form-row">
+                <div class="col">
+                    <label for="input1">Từ:</label>
+                    <input type="text" class="form-control" name="input1[]" placeholder="Nhập từ">
+                </div>
+                <div class="col">
+                    <label for="input2">Đáp án:</label>
+                    <input type="text" class="form-control" name="input2[]" placeholder="Nhập đán án">
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <button type="button" class="btn btn-primary" onclick="addInputs()">Thêm từ</button>
+                <button type="button" class="btn btn-primary" onclick="submitForm()">Okay! Run</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="countdownForm">
+        <h2>Are you ready</h2>
+        <div id="countdown">3</div>
+    </div>
+
+    <div id="ex" class="center-screen">
+        <div class="black-border center-content">
+            <!-- Nội dung của bạn sẽ ở đây -->
+            <h1 id="randomWord"></h1>
+            <h1 id="randomWord2"></h1>
+            <p>Thử đi béc đâu lại đúng</p>
+
+            <!-- Ô input và nút submit -->
+            <!-- <form class="full-width" id="myForm"> -->
+                <div class="form-row">
+                    <div class="col-md-8 mb-3">
+                        <input type="text" class="form-control" id="userInput" placeholder="Nhấp vào em">
+                    </div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-primary full-width" onclick="checkWord()">Nhấp</button>
+                    </div>
+                </div>
+            <!-- </form> -->
+        </div>
+    </div>
+
+    <!-- Thông báo pop-up -->
+    <div class="popup-alert" id="popupAlert">
+        <strong>Success!</strong> You typed the correct word.
+    </div>
+
+    <!-- Bao gồm thư viện Bootstrap JavaScript (tùy chọn) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+        // Khai báo biến để theo dõi xem randomWord2 có được hiển thị hay không
+        var randomWord2Visible = true;
+
+        // Biến để theo dõi giá trị được chọn gần đây
+        var recentRandomIndex;
+
+        // Khai báo mảng để lưu giá trị từ các input
+        var words = [];
+        var words2 = [];
+
+        function addInputs() {
+            // Tạo ra 2 input mới
+            var newInputs = '<div class="form-row mt-3">' +
+                '<div class="col">' +
+                '<label for="input1">Từ:</label>' +
+                '<input type="text" class="form-control" name="input1[]" placeholder="Nhập từ">' +
+                '</div>' +
+                '<div class="col">' +
+                '<label for="input2">Đáp án:</label>' +
+                '<input type="text" class="form-control" name="input2[]" placeholder="Nhập đáp án">' +
+                '</div>' +
+                '</div>';
+
+            // Chèn các input mới vào trước nút "Add"
+            $('#dynamicForm .text-center').before(newInputs);
+        }
+
+        function submitForm() {
+            // Lấy giá trị từ các input và thêm vào mảng tương ứng
+            $('input[name="input1[]"]').each(function() {
+                words.push($(this).val());
+            });
+
+            $('input[name="input2[]"]').each(function() {
+                words2.push($(this).val());
+            });
+
+            // Ẩn form hiện tại
+            $('#originalForm').hide();
+
+            // Hiển thị form mới với nội dung đếm ngược
+            showCountdownForm();
+        }
+
+        function showCountdownForm() {
+            var countdown = 3;
+
+            // Hiển thị form mới
+            $('#countdownForm').show();
+
+            // Đếm ngược và thực hiện hành động sau khi đếm ngược xong
+            function countdownFunction() {
+                $('#countdown').text(countdown);
+                countdown--;
+
+                if (countdown < 0) {
+                    // Ẩn form countdown
+                    $('#countdownForm').hide();
+
+                    // Hiển thị form game
+                    $('#ex').show();
+                    displayRandomWord();
+                } else {
+                    // Tiếp tục đếm ngược
+                    setTimeout(countdownFunction, 1000);
+                }
+            }
+
+            // Gọi hàm đếm ngược
+            countdownFunction();
+        }
+
+
+
+        // Hiển thị từ ngẫu nhiên khi trang web được tải
+        // window.onload = displayRandomWord;
+
+
+
+        // Mảng chứa các từ cần đoán
+        // var words = ['Thứ 2', 'xin chào', 'tạm bịt'];
+        // var words2 = ['Monday', 'Hello/hi', 'bye'];
+
+        // // Hàm để đọc nội dung từ file và lưu vào mảng
+        // function readAndStoreWords(url, targetArray) {
+        //     return fetch(url)
+        //         .then(response => response.text())
+        //         .then(data => {
+        //             // Tách các dòng từ nội dung file
+        //             var lines = data.split('\n');
+        //             // Lọc bỏ những dòng trống
+        //             var nonEmptyLines = lines.filter(line => line.trim() !== '');
+
+        //             // Lưu vào mảng targetArray
+        //             for (var i = 0; i < nonEmptyLines.length; i++) {
+        //                 targetArray.push(nonEmptyLines[i]);
+        //             }
+        //         })
+        //         .catch(error => console.error('Error reading file:', error));
+        // }
+
+        // // Mảng chứa các từ cần đoán
+        // var words = [];
+        // var words2 = [];
+
+        // // Đọc và lưu nội dung từ file vào mảng words
+        // readAndStoreWords('./words.txt', words)
+        //     .then(() => {
+        //         // Sau khi đọc xong từ file words.txt, đọc từ file words2.txt
+        //         return readAndStoreWords('./words2.txt', words2);
+        //     })
+        //     .then(() => {
+        //         // Bây giờ có thể sử dụng mảng words và words2 ở đây
+        //         // console.log(words);
+        //         // console.log(words2);
+        //         displayRandomWord()
+        //     });
+
+
+        // Hàm hiển thị từ ngẫu nhiên
+        function displayRandomWord() {
+            // Chọn một số ngẫu nhiên khác với giá trị gần đây
+            var randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * words.length);
+            } while (randomIndex === recentRandomIndex);
+
+            // Lưu giá trị được chọn gần đây
+            recentRandomIndex = randomIndex;
+
+            // Hiển thị từ ngẫu nhiên
+            document.getElementById('randomWord').innerText = words[randomIndex];
+            document.getElementById('randomWord2').innerText = words2[randomIndex];
+        }
+
+        // Hàm kiểm tra từ nhập vào
+        function checkWord() {
+            var userInput = document.getElementById('userInput').value.trim().toLowerCase();
+            var currentWord = document.getElementById('randomWord2').innerText.toLowerCase();
+            var popupAlert = document.getElementById('popupAlert');
+            var currentWordsArray = currentWord.split('/').map(item => item.trim());
+            console.log(currentWordsArray);
+
+            if (currentWordsArray.includes(userInput)) {
+                // Hiển thị thông báo pop-up khi nhập đúng
+                popupAlert.innerText = 'Okay!';
+                popupAlert.className = 'popup-alert success';
+
+                // Reset trạng thái hiển thị cho randomWord2
+                randomWord2Visible = false;
+                showRandomWord2();
+
+                // Hiển thị từ mới sau khi nhập đúng
+                displayRandomWord();
+            } else {
+                // Hiển thị thông báo pop-up khi nhập sai
+                popupAlert.innerText = 'Incorrect!';
+                popupAlert.className = 'popup-alert error';
+            }
+
+            // Hiển thị thông báo pop-up và ẩn sau 3 giây
+            popupAlert.style.display = 'block';
+            setTimeout(function() {
+                popupAlert.style.display = 'none';
+                // Xóa nội dung ô input sau khi ẩn thông báo
+                document.getElementById('userInput').value = '';
+            }, 1000);
+        }
+
+        // Hiển thị kết quả
+        document.getElementById('randomWord').addEventListener('mouseup', function() {
+            var selectedText = getSelectedText();
+            if (selectedText) {
+                // Reset trạng thái hiển thị cho randomWord2
+                randomWord2Visible = true;
+                showRandomWord2();
+                // document.getElementById('randomWord2').style.display = 'block';
+                document.getElementById('randomWord2').innerText = selectedText;
+            }
+        });
+
+        function getSelectedText() {
+            var text = '';
+            var randomWord2 = document.getElementById('randomWord2');
+
+            if (randomWord2) {
+                text = randomWord2.innerText;
+            }
+
+            return text.trim();
+        }
+
+        // Ẩn kết quả
+        document.getElementById('randomWord2').addEventListener('mouseup', function() {
+            document.getElementById('randomWord2').style.display = 'none';
+        });
+
+        // Hàm kiểm tra và ẩn randomWord2 nếu cần
+        function showRandomWord2() {
+            var randomWord2Element = document.getElementById('randomWord2');
+            // Kiểm tra xem có cần hiển thị randomWord2 hay không
+            if (randomWord2Visible) {
+                randomWord2Element.style.display = 'block';
+            } else {
+                randomWord2Element.style.display = 'none';
+            }
+        }
+
+        // 
+        // Lấy tham chiếu đến ô input
+        var userInput = document.getElementById("userInput");
+
+        // Lắng nghe sự kiện keypress trên ô input
+        userInput.addEventListener("keypress", function(event) {
+            // Kiểm tra xem phím được nhấn có phải là phím "Enter" hay không (mã phím 13)
+            if (event.keyCode === 13) {
+                // Ngăn chặn hành động mặc định của phím "Enter" trong form (nếu có)
+                event.preventDefault();
+
+                // Gọi hàm checkWord() khi nhấn "Enter"
+                checkWord();
+            }
+        });
+    </script>
+</body>
+
+</html>
